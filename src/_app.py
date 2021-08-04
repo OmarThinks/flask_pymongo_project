@@ -44,8 +44,22 @@ def post_something():
 	#print(str(p),flush=True)
 	#print(dumps(p), flush=True)
 	encoded = JSONEncoder().encode(p)
-	print(type(encoded))
+	#print(type(encoded))
 	return json.loads(encoded)
+
+
+
+@app.route("/posts")
+def get_all_posts():
+	products = db.products
+	
+	all_products = products.find()
+
+	all_products_json = []
+	for product in all_products:
+		encoded = JSONEncoder().encode(product)
+		all_products_json.append(json.loads(encoded))
+	return {"success":True, "data":all_products_json}
 
 
 
