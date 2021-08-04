@@ -10,13 +10,22 @@ collection = db.test_collection
 
 
 from flask import Flask, jsonify
-from json import dumps,loads
+#from json import dumps,loads
+import json
+from bson import ObjectId
+
+class JSONEncoder(json.JSONEncoder):
+	def default(self, o):
+		if isinstance(o, ObjectId):
+			return str(o)
+		return json.JSONEncoder.default(self, o)
+
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+	return "<p>Hello, World!</p>"
 
 
 
@@ -28,9 +37,15 @@ def post_something():
 	inserted_product = products.insert_one(product)
 	# print(inserted_product, flush=True)
 	# print(type(inserted_product), flush=True)
-	print(inserted_product.inserted_id, flush=True)
-	
-	return jsonify({"success":True})
+	id = inserted_product.inserted_id
+	p = products.find_one({"_id":id})
+	#print(p, flush=True)
+	#print(type(p), flush=True)
+	#print(str(p),flush=True)
+	#print(dumps(p), flush=True)
+	encoded = JSONEncoder().encode(p)
+	print(type(encoded))
+	return json.loads(encoded)
 
 
 
