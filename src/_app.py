@@ -59,7 +59,10 @@ def get_all_posts():
 	for product in all_products:
 		encoded = JSONEncoder().encode(product)
 		all_products_json.append(json.loads(encoded))
-	return {"success":True, "data":all_products_json}
+	return {
+		"success":True, 
+		"data":all_products_json, 
+		"count":products.count_documents({})}
 
 
 
